@@ -45,11 +45,12 @@ public class BlockTest {
         Block block = new Block(1);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         block.write(os);
-        
         byte[] s = os.toByteArray();
+        
         System.out.println(Arrays.toString(s));
         System.out.println();
         System.out.println(bytesToHex(s));
+        assertEquals(block.toString().replaceAll(" ", "").toUpperCase(), bytesToHex(s));
     }
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
