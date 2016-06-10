@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -5,14 +6,9 @@
  */
 package nl.meine.ibb.stripes;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
@@ -21,7 +17,6 @@ import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
-import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -117,7 +112,7 @@ public class ServerActionBean implements ActionBean {
             }
         };
         res.setAttachment(true);
-        res.setFilename("5CCF7F0D7F90.g092");
+        res.setFilename(ID_IWBB + ".g092");
 
         return res;
     }
