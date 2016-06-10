@@ -39,12 +39,12 @@
             <artifactId>stripes</artifactId>
             <version>1.6.0</version>
         </dependency>
-        <!-- http://mvnrepository.com/artifact/commons-io/commons-io 
+        <!-- http://mvnrepository.com/artifact/org.im4java/im4java -->
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.5</version>
-        </dependency>-->
+            <groupId>org.im4java</groupId>
+            <artifactId>im4java</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 
     </dependencies>
 
@@ -97,5 +97,12 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>cedarsoft-thirdparty</id>
+            <url>http://maven.cedarsoft.com/content/repositories/thirdparty/</url>
+        </repository>
+    </repositories>
+      
 
 </project>
