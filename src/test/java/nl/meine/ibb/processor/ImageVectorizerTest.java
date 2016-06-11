@@ -198,20 +198,6 @@ Z
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
     }
-    
-
-    /**
-     * Test of process method, of class ImageVectorizer.
-     */
-    @Test
-    public void testProcess() {
-        System.out.println("process");
-        File input = null;
-        List<Block> expResult = Collections.singletonList(b);
-        List<Block> result = instance.process(input,xOffset,yOffset);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-    }
 
     /**
      * Test of svgToPointlist method, of class ImageVectorizer.
@@ -236,23 +222,6 @@ Z
         File input = new File(this.getClass().getResource("2lines.png").getFile());
         String result = instance.fileToSvg(input);
         assertEquals(twolinessvgstring, result);        
-    }
-
-    /**
-     * Test of svgToBlockList method, of class ImageVectorizer.
-     */
-    @Test
-    public void testSvgToBlockList() {
-        System.out.println("svgToBlockList");
-        String svg = "";
-        int xOffset = 0;
-        int yOffset = 0;
-        ImageVectorizer instance = new ImageVectorizer();
-        List<Block> expResult = null;
-        List<Block> result = instance.svgToBlockList(svg, xOffset, yOffset);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
