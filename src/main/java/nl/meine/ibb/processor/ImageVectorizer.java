@@ -7,12 +7,26 @@ package nl.meine.ibb.processor;
 
 import jankovicsandras.imagetracer.ImageTracer;
 import java.io.File;
-import java.util.Collections;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import nl.meine.ibb.stripes.Block;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -98,8 +112,73 @@ public class ImageVectorizer extends Vectorizer {
 
     @Override
     public List<Block> svgToBlockList(String svg, int xOffset, int yOffset) {
-        return Collections.singletonList(new Block());
+        List<Block> blocks = new ArrayList<>();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            
+            Document doc = builder.parse(new InputSource(new StringReader(svg)));
+
+            String xpathExpression = "//path/@d";
+            //Now we can instantiate the XPath processor and compile the expression:
+
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xpath = xpf.newXPath();
+            XPathExpression expression = xpath.compile(xpathExpression);
+            //Since the expected result is a node-set (two strings), we evaluate the expression on the SVG document using XPathConstants.NODESET as the second parameter:
+
+            NodeList svgPaths = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
+            //From there you can extract the first set of path data using:
+            Block b = new Block();
+            blocks.add(b);
+            for (int i = 0; i < svgPaths.getLength(); i++) {
+                String d = svgPaths.item(i).getNodeValue();
+                parsePath(d, b);
+            }
+
+
+        } catch (SAXException ex) {
+            Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (XPathExpressionException ex) {
+            Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return blocks;
     }
+    
+    void parsePath(String d, Block b){
+        //d="M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z"
+        d = d.substring(0, d.length() - 3);
+        String[] tokens = d.split(" ");
+        for (int i = 0; i < tokens.length; i++) {
+            String commandType = tokens[i];
+            switch (commandType) {
+                case "Z":
+                    continue;
+                case "M":
+                    b.up();
+                    break;
+                case "L":
+                    b.down();
+                    break;
+                default:
+                //error
+            }
+            i++;
+            String xString = tokens[i];
+            i++;
+            String yString = tokens[i];
+
+            double x = Double.parseDouble(xString);
+            double y = Double.parseDouble(yString);
+            b.addPosition(x, y);
+        }
+    }
+    
+    
 
 
 }

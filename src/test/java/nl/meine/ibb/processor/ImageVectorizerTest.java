@@ -165,10 +165,10 @@ public class ImageVectorizerTest {
     @Test
     public void testSvgToBlocklist() {
         System.out.println("svgToPointlist");
-        String svg = "";
+        
   
         List<Block> expResult = Collections.singletonList(b);
-        List<Block> result = instance.svgToBlockList(svg,xOffset,yOffset);
+        List<Block> result = instance.svgToBlockList(twolinessvgstring,xOffset,yOffset);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
     }
@@ -182,5 +182,46 @@ public class ImageVectorizerTest {
         File input = new File(this.getClass().getResource("2lines.png").getFile());
         String result = instance.fileToSvg(input);
         assertEquals(twolinessvgstring, result);        
+    }
+
+    /**
+     * Test of svgToBlockList method, of class ImageVectorizer.
+     */
+    @Test
+    public void testSvgToBlockList() {
+        System.out.println("svgToBlockList");
+        String svg = "";
+        int xOffset = 0;
+        int yOffset = 0;
+        ImageVectorizer instance = new ImageVectorizer();
+        List<Block> expResult = null;
+        List<Block> result = instance.svgToBlockList(svg, xOffset, yOffset);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of parsePath method, of class ImageVectorizer.
+     */
+    @Test
+    public void testParsePath() {
+        System.out.println("parsePath");
+        String d = "M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z";
+        Block result = new Block();
+        result.addPosition(6.5, 10.0);
+        result.down();
+        result.addPosition(45.0,10.5);
+        result.addPosition(44.5,12.0);
+        result.addPosition(6.0,11.5);
+        result.addPosition(6.5,10.0);
+        result.up();
+        result.finish();
+        
+        Block test = new Block();
+        instance.parsePath(d, test);
+        test.finish();
+        assertEquals(result, test);
+        // TODO review the generated test code and remove the default call to fail.
     }
 }
