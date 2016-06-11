@@ -34,7 +34,11 @@ public class ImageVectorizerTest {
     private int xOffset = 1;
     private int yOffset = 1;
     
+    private int xOffset2 = 10;
+    private int yOffset2 = 20;
+    
     private static Block b;
+    private static Block bOffset;
     
     
     @BeforeClass
@@ -104,6 +108,57 @@ public class ImageVectorizerTest {
         b.addPosition(21.5, 22.0);
         b.up();
         b.finish();
+
+        bOffset= new Block();
+        bOffset.up();
+        bOffset.addPosition(5, 0.0);
+        bOffset.down();
+        bOffset.addPosition(500.0, 10);
+        bOffset.addPosition(495, 1000.0);
+        bOffset.addPosition(0.0, 990);
+        bOffset.addPosition(5, 0.0);
+        bOffset.up();
+        /*
+M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z
+
+6.5, 10.0
+bOffset.down();
+45.0,10.5
+44.5,12.0
+6.0,11.5
+6.5,10.0
+         */
+        bOffset.addPosition(65, 200.0);
+        bOffset.down();
+        bOffset.addPosition(450, 210);
+        bOffset.addPosition(445, 240);
+        bOffset.addPosition(60, 230);
+        bOffset.addPosition(65, 200.0);
+        bOffset.up();
+
+
+        /*
+M 21.5 22.0 L 23.0 22.5 L 22.5 43.0 L 21.0 42.5 L 21.5 22.0 Z
+
+21.5,22.0 
+L 
+23.0,22.5 
+L 
+22.5,43.0 
+L 
+21.0,42.5
+L 
+21.5,22.0 
+Z
+         */
+        bOffset.addPosition(21.5, 440.0);
+        bOffset.down();
+        bOffset.addPosition(230, 450);
+        bOffset.addPosition(225, 860);
+        bOffset.addPosition(210, 850);
+        bOffset.addPosition(215, 440.0);
+        bOffset.up();
+        bOffset.finish();
     }
     
     @AfterClass
@@ -219,7 +274,28 @@ public class ImageVectorizerTest {
         result.finish();
         
         Block test = new Block();
-        instance.parsePath(d, test);
+        instance.parsePath(d, test, xOffset, yOffset);
+        test.finish();
+        assertEquals(result, test);
+        // TODO review the generated test code and remove the default call to fail.
+    }
+    
+     @Test
+    public void testParsePathOffset() {
+        System.out.println("parsePath");
+        String d = "M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z";
+        Block result = new Block();
+        result.addPosition(65, 200.0);
+        result.down();
+        result.addPosition(450,210);
+        result.addPosition(445,240);
+        result.addPosition(60,230);
+        result.addPosition(65,200.0);
+        result.up();
+        result.finish();
+        
+        Block test = new Block();
+        instance.parsePath(d, test, xOffset2,yOffset2);
         test.finish();
         assertEquals(result, test);
         // TODO review the generated test code and remove the default call to fail.

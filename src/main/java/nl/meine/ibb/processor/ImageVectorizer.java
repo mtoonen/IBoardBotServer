@@ -133,7 +133,7 @@ public class ImageVectorizer extends Vectorizer {
             blocks.add(b);
             for (int i = 0; i < svgPaths.getLength(); i++) {
                 String d = svgPaths.item(i).getNodeValue();
-                parsePath(d, b);
+                parsePath(d, b, xOffset, yOffset);
             }
 
 
@@ -149,7 +149,7 @@ public class ImageVectorizer extends Vectorizer {
         return blocks;
     }
     
-    void parsePath(String d, Block b){
+    void parsePath(String d, Block b, int xOffset, int yOffset){
         //d="M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z"
         d = d.substring(0, d.length() - 3);
         String[] tokens = d.split(" ");
@@ -172,8 +172,8 @@ public class ImageVectorizer extends Vectorizer {
             i++;
             String yString = tokens[i];
 
-            double x = Double.parseDouble(xString);
-            double y = Double.parseDouble(yString);
+            double x = Double.parseDouble(xString) * xOffset;
+            double y = Double.parseDouble(yString) * yOffset;
             b.addPosition(x, y);
         }
     }
