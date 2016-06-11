@@ -6,6 +6,8 @@
 package nl.meine.ibb.processor;
 
 import java.io.File;
+import java.util.List;
+import nl.meine.ibb.stripes.Block;
 
 /**
  *
@@ -14,6 +16,11 @@ import java.io.File;
 public abstract class Vectorizer {
     
     public abstract void init();
-    public abstract File process(File input);
+    
+    public abstract List<Block> process(File input, int xOffset, int yOffset);
+    
+    public abstract String fileToSvg(File input)throws Exception;
+    
+    public abstract List<Block> svgToBlockList(String svg, int xOffset, int yOffset);
     
 }

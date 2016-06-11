@@ -22,6 +22,10 @@ public class Block {
         commands.add(START_DRAWING);
     }
 
+    public Block() {
+        this(0);
+    }
+
     public void up() {
         commands.add(PEN_LIFT);
     }
@@ -36,6 +40,10 @@ public class Block {
 
     public void addPosition(int x, int y) {
         commands.add(hex(x * 10, y * 10));
+    }
+
+    public void addPosition(double x, double y) {
+        commands.add(hex((int)x * 10, (int)y * 10));
     }
 
     public void finish() {
