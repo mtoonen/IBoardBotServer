@@ -15,6 +15,8 @@ public class Block {
     private int PEN_DOWN = hex(4004, 0);
 
     private List<Integer> commands = new ArrayList<>();
+    
+    private boolean isDown = false;
 
     public Block(int id) {
         commands.add(BLOCK_START);
@@ -27,11 +29,17 @@ public class Block {
     }
 
     public void up() {
-        commands.add(PEN_LIFT);
+        if(isDown){
+            commands.add(PEN_LIFT);
+            isDown = false;
+        }
     }
 
     public void down() {
-        commands.add(PEN_DOWN);
+        if(!isDown){
+            commands.add(PEN_DOWN);
+            isDown = true;
+        }
     }
 
     public static int hex(int c1, int c2) {
@@ -78,6 +86,10 @@ C2 = 4006, C2 = seg   : Wait C2 seconds (max 30 seconds).
         }
     }
 
+    public List<Integer> getCommands(){
+        return commands;
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -88,5 +100,22 @@ C2 = 4006, C2 = seg   : Wait C2 seconds (max 30 seconds).
         }
 
         return builder.toString().substring(1);
+    }
+    
+    @Override
+    public boolean equals(Object otherObj){
+        Block other = (Block)otherObj;
+        List<Integer> otherCommands = other.getCommands();
+        if(otherCommands.size() != commands.size()){
+            return false;
+        }
+        for (int i = 0; i < commands.size(); i++) {
+            int com = commands.get(i);
+            int otherCom = otherCommands.get(i);
+            if(com != otherCom){
+                return false;
+            }
+        }
+        return true;
     }
 }
