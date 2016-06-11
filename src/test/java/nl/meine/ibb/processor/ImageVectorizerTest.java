@@ -107,7 +107,6 @@ public class ImageVectorizerTest {
         b.addPosition(21.0, 42.5);
         b.addPosition(21.5, 22.0);
         b.up();
-        b.finish();
 
         bOffset= new Block();
         bOffset.up();
@@ -158,7 +157,6 @@ Z
         bOffset.addPosition(210, 850);
         bOffset.addPosition(215, 440.0);
         bOffset.up();
-        bOffset.finish();
     }
     
     @AfterClass
@@ -196,6 +194,7 @@ Z
         List<Block> expResult = new ArrayList<>();
         expResult.add(b);
         List<Block> result = instance.process(input,xOffset,yOffset);
+        
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
     }
@@ -271,11 +270,9 @@ Z
         result.addPosition(6.0,11.5);
         result.addPosition(6.5,10.0);
         result.up();
-        result.finish();
         
         Block test = new Block();
         instance.parsePath(d, test, xOffset, yOffset);
-        test.finish();
         assertEquals(result, test);
         // TODO review the generated test code and remove the default call to fail.
     }
@@ -292,11 +289,9 @@ Z
         result.addPosition(60,230);
         result.addPosition(65,200.0);
         result.up();
-        result.finish();
         
         Block test = new Block();
         instance.parsePath(d, test, xOffset2,yOffset2);
-        test.finish();
         assertEquals(result, test);
         // TODO review the generated test code and remove the default call to fail.
     }

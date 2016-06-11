@@ -176,6 +176,7 @@ public class ImageVectorizer extends Vectorizer {
             double y = Double.parseDouble(yString) * yOffset;
             b.addPosition(x, y);
         }
+        b.up();
     }
     
     
