@@ -8,6 +8,7 @@ package nl.meine.ibb.processor;
 import java.awt.Point;
 import java.io.File;
 import java.util.List;
+import nl.meine.ibb.stripes.Block;
 
 /**
  *
@@ -21,12 +22,17 @@ public class TextVectorizer extends Vectorizer{
     }
 
     @Override
-    public List<Point> process(File input) {
+    public List<Block> process(File input, int xOffset, int yOffset) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Point> svgToPointlist(String svg) {
+    public String fileToSvg(File input) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Block> svgToBlockList(String svg, int xOffset, int yOffset) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
