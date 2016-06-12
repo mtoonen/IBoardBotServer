@@ -35,13 +35,13 @@ public class BlockTest {
 //		System.out.println(block);
 
         // 4009 4001   [FA9FA1]  
-        int d = Block.encode(4009, 4001);
+        long d = Block.encode(4009, 4001);
         System.out.println(Long.toHexString(d));
     }
 
     @Test
     public void testStart() {
-        int val = Block.encode(4009, 4001);
+        long val = Block.encode(4009, 4001);
         System.out.println(val);
         assertEquals("fa9fa1", Long.toHexString(val));
     }

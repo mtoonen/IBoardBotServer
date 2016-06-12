@@ -70,12 +70,12 @@ public class ImageVectorizerTest {
         */
         b = new Block();
         b.up();
-        b.addPosition(0.5, 0.0);
+        b.addPosition(1, 0.0);
         b.down();
-        b.addPosition(50.0,0.5);
-        b.addPosition(49.5,50.0);
-        b.addPosition(0.0,49.5);
-        b.addPosition(0.5,0.0);
+        b.addPosition(50.0,1);
+        b.addPosition(50,50.0);
+        b.addPosition(0.0,50);
+        b.addPosition(1,0.0);
         b.up();
         /*
         M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z
@@ -87,12 +87,12 @@ public class ImageVectorizerTest {
         6.0,11.5
         6.5,10.0
         */
-        b.addPosition(6.5, 10.0);
+        b.addPosition(7, 10.0);
         b.down();
         b.addPosition(45.0,10.5);
-        b.addPosition(44.5,12.0);
-        b.addPosition(6.0,11.5);
-        b.addPosition(6.5,10.0);
+        b.addPosition(45,12.0);
+        b.addPosition(6.0,12);
+        b.addPosition(7,10.0);
         b.up();
         
         
@@ -111,12 +111,12 @@ public class ImageVectorizerTest {
         Z
         */
         
-        b.addPosition(21.5, 22.0);
+        b.addPosition(22, 22.0);
         b.down();
-        b.addPosition(23.0, 22.5);
-        b.addPosition(22.5, 43.0);
-        b.addPosition(21.0, 42.5);
-        b.addPosition(21.5, 22.0);
+        b.addPosition(23.0, 23);
+        b.addPosition(23, 43.0);
+        b.addPosition(21.0, 43);
+        b.addPosition(22, 22.0);
         b.up();
 
         bOffset= new Block();
@@ -161,7 +161,7 @@ L
 21.5,22.0 
 Z
          */
-        bOffset.addPosition(21.5, 440.0);
+        bOffset.addPosition(22, 440.0);
         bOffset.down();
         bOffset.addPosition(230, 450);
         bOffset.addPosition(225, 860);

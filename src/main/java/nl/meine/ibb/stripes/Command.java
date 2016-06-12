@@ -31,20 +31,20 @@ public enum Command {
     PEN_DOWN ( encode(4004, 0)),
     COORDINATE(-1);
 
-    private final int value;
+    private final long value;
     
     private int x, y;
 
-    Command(int value){
+    Command(long value){
         this.value = value;
     }
     
-    public int getValue(){
+    public long getValue(){
         return value;
     }
     
     
-    public static Command valueOf(int val){
+    public static Command valueOf(long val){
         for (Command com : Command.values()) {
             if(com.value == val){
                 return com;

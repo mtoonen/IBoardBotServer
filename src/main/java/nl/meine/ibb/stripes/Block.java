@@ -24,7 +24,7 @@ import java.util.List;
 
 public class Block {
   
-    private List<Integer> commands = new ArrayList<>();
+    private List<Long> commands = new ArrayList<>();
     
     private boolean isDown = false;
 
@@ -52,23 +52,23 @@ public class Block {
         }
     }
 
-    public static int encode(int c1, int c2) {
+    public static long encode(long c1, long c2) {
         return (c1 << 12) + c2;
     }
     
-    public static String decode (int num){
-        int first = num >> 12;
-        int second = num - ( first << 12);
+    public static String decode (long num){
+        long first = num >> 12;
+        long second = num - ( first << 12);
         String s = first + "," + second;
         return s;
     }
 
-    public void addPosition(int x, int y) {
+    public void addPosition(long x, long y) {
         commands.add(encode(x , y));
     }
 
     public void addPosition(double x, double y) {
-        addPosition((int)x, (int)y);
+        addPosition(Math.round(x), Math.round(y));
     }
 
     public void finish() {
@@ -92,27 +92,27 @@ C2 = 4006, C2 = seg   : Wait C2 seconds (max 30 seconds).
     }
 
     public void write(OutputStream out) throws IOException {
-        for (int command : commands) {
-            ByteBuffer buffer = ByteBuffer.allocate(4).putInt(command);
+        for (long command : commands) {
+            ByteBuffer buffer = ByteBuffer.allocate(8).putLong(command);
             byte[] buf = new byte[3];
             buffer.rewind();
-            buf[0] = buffer.get(1);
-            buf[1] = buffer.get(2);
-            buf[2] = buffer.get(3);
+            buf[0] = buffer.get(5);
+            buf[1] = buffer.get(6);
+            buf[2] = buffer.get(7);
             out.write(buf);
         }
     }
 
-    public List<Integer> getCommands(){
+    public List<Long> getCommands(){
         return commands;
     }
     
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (int command : commands) {
+        for (long command : commands) {
             builder.append(" ");
-            String value = Integer.toHexString(command);
+            String value = Long.toHexString(command);
             builder.append(pad(value));
         }
 
@@ -121,7 +121,7 @@ C2 = 4006, C2 = seg   : Wait C2 seconds (max 30 seconds).
     
     public String toHumanReadableString(){
         StringBuilder builder = new StringBuilder();
-        for (Integer command : commands) {
+        for (Long command : commands) {
             builder.append(" ");
             
             Command com = Command.valueOf(command);
@@ -155,13 +155,13 @@ C2 = 4006, C2 = seg   : Wait C2 seconds (max 30 seconds).
     @Override
     public boolean equals(Object otherObj){
         Block other = (Block)otherObj;
-        List<Integer> otherCommands = other.getCommands();
+        List<Long> otherCommands = other.getCommands();
         if(otherCommands.size() != commands.size()){
             return false;
         }
         for (int i = 0; i < commands.size(); i++) {
-            int com = commands.get(i);
-            int otherCom = otherCommands.get(i);
+            long com = commands.get(i);
+            long otherCom = otherCommands.get(i);
             if(com != otherCom){
                 return false;
             }

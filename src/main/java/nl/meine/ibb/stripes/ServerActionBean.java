@@ -108,7 +108,7 @@ public class ServerActionBean implements ActionBean {
     @DefaultHandler
     public Resolution poll() {
         log.debug("Polled. AppId " + ID_IWBB + " with status " + STATUS);
-         p = new Processor(1000, 1000);
+         p = new Processor(100, 100);
          
         File input = new File(this.getClass().getResource("2lines.png").getFile());
         List<Block> bs = p.processImage(input);
