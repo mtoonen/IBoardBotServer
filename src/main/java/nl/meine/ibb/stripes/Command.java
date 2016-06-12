@@ -14,36 +14,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.meine.ibb.processor;
+package nl.meine.ibb.stripes;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import nl.meine.ibb.stripes.Block;
+import static nl.meine.ibb.stripes.Block.encode;
 
 /**
  *
  * @author Meine Toonen
  */
-public class Processor {
+public enum Command {
     
-    private final Vectorizer imageVectorizer;
-    private final Vectorizer textVectorizer;
+    BLOCK_START(encode(4009, 4001)),    
+    START_DRAWING ( encode(4001, 4001)),
+    STOP_DRAWING ( encode(4002, 4000)),
+    PEN_LIFT ( encode(4003, 0)),
+    PEN_DOWN ( encode(4004, 0)),
+    COORDINATE(-1);
+
+    private final int value;
     
-    private final int width, height;
-    
-    public Processor(int width, int height){
-        imageVectorizer = new ImageVectorizer();
-        textVectorizer = new TextVectorizer();     
-        this.width = width;
-        this.height = height;
+    private int x, y;
+
+    Command(int value){
+        this.value = value;
     }
     
-    public List<Block> processImage(File img){
-        List<Block> blocks = null;
-        blocks = imageVectorizer.process(img, width, height);
-        blocks.get(blocks.size() - 1).finish();
-        return blocks;
+    public int getValue(){
+        return value;
     }
     
+    
+    public static Command valueOf(int val){
+        for (Command com : Command.values()) {
+            if(com.value == val){
+                return com;
+            }
+        }
+        return COORDINATE;
+        
+    }
 }

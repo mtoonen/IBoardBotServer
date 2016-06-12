@@ -35,13 +35,13 @@ public class BlockTest {
 //		System.out.println(block);
 
         // 4009 4001   [FA9FA1]  
-        int d = Block.hex(4009, 4001);
+        int d = Block.encode(4009, 4001);
         System.out.println(Long.toHexString(d));
     }
 
     @Test
     public void testStart() {
-        int val = Block.hex(4009, 4001);
+        int val = Block.encode(4009, 4001);
         System.out.println(val);
         assertEquals("fa9fa1", Long.toHexString(val));
     }
@@ -54,6 +54,33 @@ public class BlockTest {
         block.finish();
         System.out.println(block);
         //assertEquals("fa9fa1", Long.toHexString(Block.hex(4009, 4001)));
+    }
+    
+    @Test
+    public void testDecode1(){
+        int input = 409700;
+        String expected =  "100,100";
+        String real = Block.decode(input);
+        assertEquals(expected, real);
+    }
+    
+    @Test
+    public void testDecode2(){
+        int input = 819300;
+        String expected =  "200,100";
+        String real = Block.decode(input);
+        assertEquals(expected, real);
+    }
+    
+    @Test
+    public void testHumanReadableString(){
+        Block block = new Block(0);
+        block.down();
+        block.addPosition(10, 10);
+        block.finish();
+        String result = block.toHumanReadableString();
+        String exp = "BLOCK_START ID(0) START_DRAWING PEN_DOWN COORDINATE(10,10) PEN_LIFT COORDINATE(0,0) STOP_DRAWING";
+        assertEquals(exp, result);
     }
 
     @Test

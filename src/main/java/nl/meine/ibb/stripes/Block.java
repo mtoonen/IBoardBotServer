@@ -23,21 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Block {
-
-    private int BLOCK_START = hex(4009, 4001);
-    private int START_DRAWING = hex(4001, 4001);
-    private int STOP_DRAWING = hex(4002, 4000);
-    private int PEN_LIFT = hex(4003, 0);
-    private int PEN_DOWN = hex(4004, 0);
-
+  
     private List<Integer> commands = new ArrayList<>();
     
     private boolean isDown = false;
 
     public Block(int id) {
-        commands.add(BLOCK_START);
-        commands.add(hex(4009, id));
-        commands.add(START_DRAWING);
+        commands.add(Command.BLOCK_START.getValue());
+        commands.add(encode(4009, id));
+        commands.add(Command.START_DRAWING.getValue());
     }
 
     public Block() {
@@ -46,34 +40,41 @@ public class Block {
 
     public void up() {
         if(isDown){
-            commands.add(PEN_LIFT);
+            commands.add(Command.PEN_LIFT.getValue());
             isDown = false;
         }
     }
 
     public void down() {
         if(!isDown){
-            commands.add(PEN_DOWN);
+            commands.add(Command.PEN_DOWN.getValue());
             isDown = true;
         }
     }
 
-    public static int hex(int c1, int c2) {
+    public static int encode(int c1, int c2) {
         return (c1 << 12) + c2;
+    }
+    
+    public static String decode (int num){
+        int first = num >> 12;
+        int second = num - ( first << 12);
+        String s = first + "," + second;
+        return s;
     }
 
     public void addPosition(int x, int y) {
-        commands.add(hex(x * 10, y * 10));
+        commands.add(encode(x , y));
     }
 
     public void addPosition(double x, double y) {
-        commands.add(hex((int)x * 10, (int)y * 10));
+        addPosition((int)x, (int)y);
     }
 
     public void finish() {
         up();
         addPosition(0, 0);
-        commands.add(STOP_DRAWING);
+        commands.add(Command.STOP_DRAWING.getValue());
     }
 
     /*
@@ -116,6 +117,39 @@ C2 = 4006, C2 = seg   : Wait C2 seconds (max 30 seconds).
         }
 
         return builder.toString().substring(1);
+    }
+    
+    public String toHumanReadableString(){
+        StringBuilder builder = new StringBuilder();
+        for (Integer command : commands) {
+            builder.append(" ");
+            
+            Command com = Command.valueOf(command);
+            
+            if(!com.equals(Command.COORDINATE)){
+                builder.append(com.toString());
+                
+            }else{
+                String comString = Block.decode(command);
+                
+                String s = comString.length() > 4 ? comString.substring(0, 4) : comString;
+
+                if (s.equalsIgnoreCase("4009")) {
+                    String id = comString.substring(5);
+                    builder.append("ID(");
+                    builder.append(id);
+                    builder.append(")");
+                    //id
+                } else {
+                    builder.append("COORDINATE(");
+                    builder.append(comString);
+                    builder.append(")");
+                }
+            }
+            
+        }
+        return builder.toString().substring(1);
+        
     }
     
     @Override
