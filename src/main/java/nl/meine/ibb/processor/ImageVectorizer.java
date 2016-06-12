@@ -49,8 +49,22 @@ public class ImageVectorizer extends Vectorizer {
 
     private byte[][] palette;
     private static final Log log = LogFactory.getLog(ImageVectorizer.class);
-
+    
+    private double resolution; // resolution in mm/coord
+    private int boardWidthCm;    // width in cm
+    private int boardHeightCm;   // height in cm
+    
+    
     public ImageVectorizer() {
+        this(36, 12, 0.1);        // Standard IBB size glass
+    }
+    
+    public ImageVectorizer(int boardWidth, int boardHeight, double resolution){
+        this.boardHeightCm = boardHeight;
+        this.boardWidthCm = boardWidth;
+        this.resolution = resolution;
+        
+       // width = Math.round(this.boardHeightCm / resolution) * 10; 
         init();
     }
 
@@ -66,13 +80,13 @@ public class ImageVectorizer extends Vectorizer {
     }
 
     @Override
-    public List<Block> process(File input, int width, int height) {
+    public List<Block> process(File input, int width, int height, double resolution) {
         List<Block> pointlist = null;
         try {
             String svg = fileToSvg(input);
-            pointlist = svgToBlockList(svg, width, height);
+            pointlist = svgToBlockList(svg, width, height, resolution);
         } catch (Exception ex) {
-            Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("cannot process: ", ex);
         }
         return pointlist;
     }
@@ -82,6 +96,87 @@ public class ImageVectorizer extends Vectorizer {
         HashMap<String, Float> options = getDefaultOptions();
         String svg = ImageTracer.imageToSVG(input.getAbsolutePath(),options,palette);
         return svg;
+    }
+    
+    @Override
+    public List<Block> svgToBlockList(String svg, int width, int height, double resolution) {
+        List<Block> blocks = new ArrayList<>();
+        try {
+            
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            
+            Document doc = builder.parse(new InputSource(new StringReader(svg)));
+
+            String widthString = "/svg/@width";
+            String heightString = "/svg/@height";
+            String pathString = "//path/@d";
+            //Now we can instantiate the XPath processor and compile the expression:
+
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xpath = xpf.newXPath();
+            XPathExpression pathExpression = xpath.compile(pathString);
+            XPathExpression widthExpression = xpath.compile(widthString);
+            XPathExpression heightExpression = xpath.compile(heightString);
+            //Since the expected result is a node-set (two strings), we evaluate the expression on the SVG document using XPathConstants.NODESET as the second parameter:
+
+            NodeList svgPaths = (NodeList) pathExpression.evaluate(doc, XPathConstants.NODESET);
+            
+            double w = (double)widthExpression.evaluate(doc, XPathConstants.NUMBER);
+            double h = (double)heightExpression.evaluate(doc, XPathConstants.NUMBER);
+            
+            double widthRatio = (width / resolution * 10) / w;
+            double heightRatio = (height / resolution * 10) / h;
+            
+            //From there you can extract the first set of path data using:
+            Block b = new Block();
+            blocks.add(b);
+            for (int i = 0; i < svgPaths.getLength(); i++) {
+                String d = svgPaths.item(i).getNodeValue();
+                parsePath(d, b, widthRatio, heightRatio);
+            }
+        } catch (SAXException ex) {
+            log.error("Cannot parse svg document:",ex);
+        } catch (IOException ex) {
+            log.error("Cannot open file: ",ex);
+        } catch (XPathExpressionException ex) {
+            log.error( "Cannot retrieve paths via xpath", ex);
+        } catch (ParserConfigurationException ex) {
+            log.error("Cannot parse svg document", ex);
+        }
+        return blocks;
+    }
+    
+    void parsePath(String d, Block b, double widthRatio, double heightRatio){
+        //d="M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z"
+        d = d.substring(0, d.length() - 3);
+        String[] tokens = d.split(" ");
+        for (int i = 0; i < tokens.length; i++) {
+            String commandType = tokens[i];
+            switch (commandType) {
+                case "Z":
+                    continue;
+                case "M":
+                    b.up();
+                    break;
+                case "L":
+                    b.down();
+                    break;
+                default:
+                    log.debug("Complete path: " + d);
+                    log.error("Cannot parse commandtype >" + commandType + "<.");
+                    break;
+            }
+            i++;
+            String xString = tokens[i];
+            i++;
+            String yString = tokens[i];
+
+            double x = Double.parseDouble(xString) * widthRatio;
+            double y = Double.parseDouble(yString) * heightRatio;
+            b.addPosition(x, y);
+        }
+        b.up();
     }
     
     private HashMap<String, Float> getDefaultOptions() {
@@ -113,72 +208,4 @@ public class ImageVectorizer extends Vectorizer {
         return options;
     }
 
-    @Override
-    public List<Block> svgToBlockList(String svg, int width, int height) {
-        List<Block> blocks = new ArrayList<>();
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            
-            Document doc = builder.parse(new InputSource(new StringReader(svg)));
-
-            String xpathExpression = "//path/@d";
-            //Now we can instantiate the XPath processor and compile the expression:
-
-            XPathFactory xpf = XPathFactory.newInstance();
-            XPath xpath = xpf.newXPath();
-            XPathExpression expression = xpath.compile(xpathExpression);
-            //Since the expected result is a node-set (two strings), we evaluate the expression on the SVG document using XPathConstants.NODESET as the second parameter:
-
-            NodeList svgPaths = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
-            //From there you can extract the first set of path data using:
-            Block b = new Block();
-            blocks.add(b);
-            for (int i = 0; i < svgPaths.getLength(); i++) {
-                String d = svgPaths.item(i).getNodeValue();
-                parsePath(d, b, width, height);
-            }
-        } catch (SAXException ex) {
-            log.error("Cannot parse svg document:",ex);
-        } catch (IOException ex) {
-            log.error("Cannot open file: ",ex);
-        } catch (XPathExpressionException ex) {
-            log.error( "Cannot retrieve paths via xpath", ex);
-        } catch (ParserConfigurationException ex) {
-            log.error("Cannot parse svg document", ex);
-        }
-        return blocks;
-    }
-    
-    void parsePath(String d, Block b, int width, int height){
-        //d="M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z"
-        d = d.substring(0, d.length() - 3);
-        String[] tokens = d.split(" ");
-        for (int i = 0; i < tokens.length; i++) {
-            String commandType = tokens[i];
-            switch (commandType) {
-                case "Z":
-                    continue;
-                case "M":
-                    b.up();
-                    break;
-                case "L":
-                    b.down();
-                    break;
-                default:
-                    log.debug("Complete path: " + d);
-                    log.error("Cannot parse commandtype >" + commandType + "<.");
-                    break;
-            }
-            i++;
-            String xString = tokens[i];
-            i++;
-            String yString = tokens[i];
-
-            double x = Double.parseDouble(xString) * width;
-            double y = Double.parseDouble(yString) * height;
-            b.addPosition(x, y);
-        }
-        b.up();
-    }
 }

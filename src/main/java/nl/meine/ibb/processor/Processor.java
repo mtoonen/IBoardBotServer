@@ -31,17 +31,19 @@ public class Processor {
     private final Vectorizer textVectorizer;
     
     private final int width, height;
+    private final double resolution;
     
-    public Processor(int width, int height){
+    public Processor(int width, int height, double resolution){
         imageVectorizer = new ImageVectorizer();
         textVectorizer = new TextVectorizer();     
         this.width = width;
         this.height = height;
+        this.resolution = resolution;
     }
     
     public List<Block> processImage(File img){
         List<Block> blocks = null;
-        blocks = imageVectorizer.process(img, width, height);
+        blocks = imageVectorizer.process(img, width, height, resolution);
         blocks.get(blocks.size() - 1).finish();
         return blocks;
     }

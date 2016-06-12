@@ -28,10 +28,10 @@ public abstract class Vectorizer {
     
     public abstract void init();
     
-    public abstract List<Block> process(File input, int width, int height);
+    public abstract List<Block> process(File input, int width, int height, double resolution);
     
     public abstract String fileToSvg(File input)throws Exception;
     
-    public abstract List<Block> svgToBlockList(String svg, int width, int height);
+    public abstract List<Block> svgToBlockList(String svg, int width, int height, double resolution);
     
 }

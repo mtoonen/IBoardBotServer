@@ -33,7 +33,7 @@ public class TextVectorizer extends Vectorizer{
     }
 
     @Override
-    public List<Block> process(File input, int width, int height) {
+    public List<Block> process(File input, int width, int height, double resolution) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -43,7 +43,7 @@ public class TextVectorizer extends Vectorizer{
     }
 
     @Override
-    public List<Block> svgToBlockList(String svg, int width, int height) {
+    public List<Block> svgToBlockList(String svg, int width, int height, double resolution) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

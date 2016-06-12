@@ -16,7 +16,6 @@
  */
 package nl.meine.ibb.processor;
 
-import java.awt.Point;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -44,6 +43,8 @@ public class ImageVectorizerTest {
     
     private int width = 1;
     private int height = 1;
+    
+    private double resolution = 0.1;
     
     private int width2 = 10;
     private int height2 = 20;
@@ -204,7 +205,7 @@ Z
         
         List<Block> expResult = new ArrayList<>();
         expResult.add(b);
-        List<Block> result = instance.process(input,width,height);
+        List<Block> result = instance.process(input,width,height, 0.2);
         
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -219,8 +220,8 @@ Z
         
   
         List<Block> expResult = Collections.singletonList(b);
-        List<Block> result = instance.svgToBlockList(twolinessvgstring,width,height);
-        assertEquals(expResult, result);
+        List<Block> result = instance.svgToBlockList(twolinessvgstring,width,height, 0.2);
+        assertEquals(expResult.get(0).toHumanReadableString(), result.get(0).toHumanReadableString());
         // TODO review the generated test code and remove the default call to fail.
     }
 
@@ -274,5 +275,37 @@ Z
         instance.parsePath(d, test, width2,height2);
         assertEquals(result, test);
         // TODO review the generated test code and remove the default call to fail.
+    }
+    
+     /**
+     * Test of parsePath method, of class ImageVectorizer.
+     */
+    @Test
+    public void testPathToRelativeCoords() {
+        System.out.println("parsePath");
+        String d = "M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z";
+        
+        int imgWidth = 50;
+        int imgHeight = 50;
+
+        int boardWidth = 36; // 36 /0.1 * 10 
+        int boardHeight = 12; // 12/0.1*10
+        double resolution = 0.1;
+        double widthRatio = (boardWidth / resolution * 10) / imgWidth;
+        double heightRatio = (boardHeight / resolution * 10) / imgHeight;
+
+        ImageVectorizer instance = new ImageVectorizer(boardWidth, boardHeight, resolution);
+        Block result = new Block();
+        result.addPosition(6.5 * widthRatio, 10.0 * heightRatio);
+        result.down();
+        result.addPosition(45.0 * widthRatio,10.5* heightRatio);
+        result.addPosition(44.5 * widthRatio,12.0* heightRatio);
+        result.addPosition(6.0 * widthRatio,11.5* heightRatio);
+        result.addPosition(6.5 * widthRatio,10.0* heightRatio);
+        result.up();
+        
+        Block test = new Block();
+        instance.parsePath(d, test, widthRatio, heightRatio);
+        assertEquals(result.toHumanReadableString(), test.toHumanReadableString());
     }
 }

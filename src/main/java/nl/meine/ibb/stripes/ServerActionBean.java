@@ -105,7 +105,7 @@ public class ServerActionBean implements ActionBean {
     // </editor-fold>
 
     public Resolution view() throws Exception{
-          p = new Processor(100, 100);
+          p = new Processor(100, 100, 0.1);
          
         File input = new File(this.getClass().getResource("2lines.png").getFile());
         ImageVectorizer iv = new ImageVectorizer();
@@ -116,7 +116,7 @@ public class ServerActionBean implements ActionBean {
     @DefaultHandler
     public Resolution poll() {
         log.debug("Polled. AppId " + ID_IWBB + " with status " + STATUS);
-         p = new Processor(100, 100);
+         p = new Processor(100, 100, 0.1);
          
         File input = new File(this.getClass().getResource("2lines.png").getFile());
         List<Block> bs = p.processImage(input);

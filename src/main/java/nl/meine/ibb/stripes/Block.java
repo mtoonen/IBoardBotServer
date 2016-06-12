@@ -65,7 +65,7 @@ public class Block {
     }
 
     public void addPosition(long x, long y) {
-        commands.add(encode(x , height - y));
+        commands.add(encode(x ,  y));
     }
 
     public void addPosition(double x, double y) {
