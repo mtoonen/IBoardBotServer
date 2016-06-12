@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 
 /**
  *
- * @author meine
+ * @author Meine Toonen
  */
 public class ServerActionBeanTest {
     

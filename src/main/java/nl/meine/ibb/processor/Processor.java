@@ -17,18 +17,20 @@
 package nl.meine.ibb.processor;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import nl.meine.ibb.stripes.Block;
 
 /**
  *
- * @author meine
+ * @author Meine Toonen
  */
 public class Processor {
     
     
     public List<Block> processImage(File img){
-        
+        List<Block> blocks = new ArrayList<>();
+        return blocks;
     }
     
 }

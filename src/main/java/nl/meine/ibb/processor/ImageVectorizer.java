@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author meine
+ * @author Meine Toonen
  */
 public class ImageVectorizer extends Vectorizer {
 

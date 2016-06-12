@@ -22,7 +22,7 @@ import nl.meine.ibb.stripes.Block;
 
 /**
  *
- * @author meine
+ * @author Meine Toonen
  */
 public abstract class Vectorizer {
     

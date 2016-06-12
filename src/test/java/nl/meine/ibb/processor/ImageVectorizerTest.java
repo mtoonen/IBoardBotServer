@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author meine
+ * @author Meine Toonen
  */
 public class ImageVectorizerTest {
     

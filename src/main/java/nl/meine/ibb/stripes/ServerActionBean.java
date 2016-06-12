@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  *
- * @author meine
+ * @author Meine Toonen
  */
 @UrlBinding("/action/server")
 public class ServerActionBean implements ActionBean {
