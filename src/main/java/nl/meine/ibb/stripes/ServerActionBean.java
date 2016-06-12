@@ -96,7 +96,7 @@ public class ServerActionBean implements ActionBean {
 
     @DefaultHandler
     public Resolution poll() {
-        System.out.println("Polled: Status:" + STATUS + " num: " + NUM);
+        log.debug("Polled. AppId " + ID_IWBB + " with status " + STATUS);
         final Block b = new Block(1);
         b.addPosition(1000,100);
         b.down();
