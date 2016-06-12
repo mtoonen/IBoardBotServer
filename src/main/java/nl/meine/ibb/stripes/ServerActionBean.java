@@ -17,6 +17,9 @@ import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
+import nl.meine.ibb.processor.ImageVectorizer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -25,6 +28,13 @@ import net.sourceforge.stripes.validation.Validate;
 @UrlBinding("/action/server")
 public class ServerActionBean implements ActionBean {
 
+    private static final Log log = LogFactory.getLog(ServerActionBean.class);
+    
+    public ServerActionBean() {
+    }
+
+    private ActionBeanContext context;
+    
     @Validate
     private String STATUS;
 
@@ -49,7 +59,7 @@ public class ServerActionBean implements ActionBean {
     };*/
   
  
-    // <editor-fold desc="Getters and Setters" default-state="collapsed">
+    // <editor-fold desc="Getters and Setters" defaultstate="collapsed">
     public void setNUM(int NUM) {
         this.NUM = NUM;
     }
@@ -73,12 +83,6 @@ public class ServerActionBean implements ActionBean {
         return NUM;
     }
 
-    // </editor-fold>
-    public ServerActionBean() {
-    }
-
-    private ActionBeanContext context;
-
     @Override
     public ActionBeanContext getContext() {
         return context;
@@ -88,6 +92,7 @@ public class ServerActionBean implements ActionBean {
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
+    // </editor-fold>
 
     @DefaultHandler
     public Resolution poll() {
@@ -99,59 +104,16 @@ public class ServerActionBean implements ActionBean {
         b.up();
         b.finish();
 
-       
         StreamingResolution res = new StreamingResolution("application/octet-stream") {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
-                
-
                 OutputStream out = response.getOutputStream();
                 b.write(out);
-          
                 out.close();
             }
         };
         res.setAttachment(true);
         res.setFilename(ID_IWBB + ".g092");
-
         return res;
     }
-    
-    public byte[] commandToByte(String command){
-        String c = new BigInteger(command, 16).toString(2);
-        int a = Integer.parseInt(c, 2);
-        ByteBuffer bytes = ByteBuffer.allocate(8).putLong(a);
-
-        byte[] array = bytes.array();
-        return array;
-    }
-
-    public int hex2decimal(String s) {
-        int value = Integer.parseInt(s, 16);
-        return value;
-    }
-
-    public String convert(String command) {
-        byte[] bs = command.getBytes();
-        String s = "";
-        for (byte b : bs) {
-            s += Integer.toBinaryString(b);
-        }
-
-        return s;
-    }
-
-    public String convert(int command) {
-        String s = "";
-        s = Integer.toBinaryString(command);
-        return s;
-    }
-
-    public static void main(String[] args) {
-        String s = "abc";
-        ServerActionBean sab = new ServerActionBean();
-        String val = sab.convert(s);
-        //   System.out.println("asdfasdf" + val);
-    }
-
 }

@@ -23,6 +23,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import nl.meine.ibb.stripes.Block;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -35,6 +37,7 @@ import org.xml.sax.SAXException;
 public class ImageVectorizer extends Vectorizer {
 
     private byte[][] palette;
+    private static final Log log = LogFactory.getLog(ImageVectorizer.class);
 
     public ImageVectorizer() {
         init();
@@ -63,39 +66,28 @@ public class ImageVectorizer extends Vectorizer {
         return pointlist;
     }
 
-    
-    
-    /* For imagemagick
-    // bmp --> png
-    // jpg --> png
-    // gif --> svg
-    // flatten png 
-        // png -> svg
-     */
-
     @Override
     public String fileToSvg(File input) throws Exception{
         HashMap<String, Float> options = getDefaultOptions();
         String svg = ImageTracer.imageToSVG(input.getAbsolutePath(),options,palette);
-   
         return svg;
     }
     
     private HashMap<String, Float> getDefaultOptions() {
         HashMap<String, Float> options = new HashMap<>();
 
-// Tracing
+        // Tracing
         options.put("ltres", 1f);
         options.put("qtres", 1f);
         options.put("pathomit", 8f);
 
-// Color quantization
+        // Color quantization
         options.put("colorsampling", 1f); // 1f means true ; 0f means false: starting with generated palette
         options.put("numberofcolors", 16f);
         options.put("mincolorratio", 0.02f);
         options.put("colorquantcycles", 3f);
 
-// SVG rendering
+        // SVG rendering
         options.put("scale", 1f);
         options.put("simplifytolerance", 0f);
         options.put("roundcoords", 1f); // 1f means rounded to 1 decimal places, like 7.3 ; 3f means rounded to 3 places, like 7.356 ; etc.
@@ -104,7 +96,7 @@ public class ImageVectorizer extends Vectorizer {
         options.put("desc", 0f); // 1f means true ; 0f means false: SVG descriptions deactivated
         options.put("viewbox", 0f); // 1f means true ; 0f means false: fixed width and height
 
-// Selective Gauss Blur
+        // Selective Gauss Blur
         options.put("blurradius", 0f); // 0f means deactivated; 1f .. 5f : blur with this radius
         options.put("blurdelta", 20f); // smaller than this RGB difference will be blurred
         return options;
@@ -135,16 +127,14 @@ public class ImageVectorizer extends Vectorizer {
                 String d = svgPaths.item(i).getNodeValue();
                 parsePath(d, b, xOffset, yOffset);
             }
-
-
         } catch (SAXException ex) {
-            Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Cannot parse svg document:",ex);
         } catch (IOException ex) {
-            Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Cannot open file: ",ex);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
+            log.error( "Cannot retrieve paths via xpath", ex);
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Cannot parse svg document", ex);
         }
         return blocks;
     }
@@ -165,7 +155,9 @@ public class ImageVectorizer extends Vectorizer {
                     b.down();
                     break;
                 default:
-                //error
+                    log.debug("Complete path: " + d);
+                    log.error("Cannot parse commandtype >" + commandType + "<.");
+                    break;
             }
             i++;
             String xString = tokens[i];
@@ -178,8 +170,4 @@ public class ImageVectorizer extends Vectorizer {
         }
         b.up();
     }
-    
-    
-
-
 }

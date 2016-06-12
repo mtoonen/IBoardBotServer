@@ -37,30 +37,5 @@ public class ServerActionBeanTest {
     
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of main method, of class ServerActionBean.
-     */
-    @Test
-    public void testMain() {
-       // String s = "abc";
-        //String s = "40014001";
-       // int s= 4001; //111110100001
-                       //111110100001
-                      //111110100001
-                      //111110100001
-                      //111110100001
-        //String s = "FA1FA1"; //1000110100000111000110001101000001110001
-                     //111110100001 111110100001
-        String s = "FA1FA1";// FA1";
-        /*"FA9001";
-        "FA1FA1";
-        "FA3000";*/
-        ServerActionBean sab = new ServerActionBean();
-        byte[] val = sab.commandToByte(s);
-        System.out.println(val);
-        
-    }
-    
+    }    
 }
