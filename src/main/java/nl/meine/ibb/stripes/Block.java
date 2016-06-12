@@ -27,6 +27,7 @@ public class Block {
     private List<Long> commands = new ArrayList<>();
     
     private boolean isDown = false;
+    private int height = 4000;
 
     public Block(int id) {
         commands.add(Command.BLOCK_START.getValue());
@@ -64,7 +65,7 @@ public class Block {
     }
 
     public void addPosition(long x, long y) {
-        commands.add(encode(x , y));
+        commands.add(encode(x , height - y));
     }
 
     public void addPosition(double x, double y) {
@@ -73,7 +74,7 @@ public class Block {
 
     public void finish() {
         up();
-        addPosition(0, 0);
+        addPosition(0, height);
         commands.add(Command.STOP_DRAWING.getValue());
     }
 
