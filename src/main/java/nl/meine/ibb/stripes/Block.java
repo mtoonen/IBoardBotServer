@@ -27,16 +27,21 @@ public class Block {
     private List<Long> commands = new ArrayList<>();
     
     private boolean isDown = false;
-    private int height = 4000;
+    private int height = 1200;  // used for inverting y axis
 
-    public Block(int id) {
+    public Block(int id, int height) {
         commands.add(Command.BLOCK_START.getValue());
         commands.add(encode(4009, id));
         commands.add(Command.START_DRAWING.getValue());
+        this.height = height;
     }
 
     public Block() {
-        this(0);
+        this(0, 1200);
+    }
+
+    public Block(int id) {
+        this(id, 1200);
     }
 
     public void up() {
@@ -65,7 +70,7 @@ public class Block {
     }
 
     public void addPosition(long x, long y) {
-        commands.add(encode(x ,  y));
+        commands.add(encode(x ,  height - y));
     }
 
     public void addPosition(double x, double y) {

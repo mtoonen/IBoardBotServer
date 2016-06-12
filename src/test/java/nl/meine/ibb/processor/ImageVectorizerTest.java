@@ -207,7 +207,7 @@ Z
         expResult.add(b);
         List<Block> result = instance.process(input,width,height, 0.2);
         
-        assertEquals(expResult, result);
+        assertEquals(expResult.get(0).toHumanReadableString(), result.get(0).toHumanReadableString());
         // TODO review the generated test code and remove the default call to fail.
     }
 

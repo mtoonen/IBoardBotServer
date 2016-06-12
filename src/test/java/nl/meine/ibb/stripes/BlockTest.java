@@ -79,7 +79,7 @@ public class BlockTest {
         block.addPosition(10, 10);
         block.finish();
         String result = block.toHumanReadableString();
-        String exp = "BLOCK_START ID(0) START_DRAWING PEN_DOWN COORDINATE(10,10) PEN_LIFT COORDINATE(0,4000) STOP_DRAWING";
+        String exp = "BLOCK_START ID(0) START_DRAWING PEN_DOWN COORDINATE(10,1190) PEN_LIFT COORDINATE(0,0) STOP_DRAWING";
         assertEquals(exp, result);
     }
 
