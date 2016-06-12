@@ -71,13 +71,6 @@ public class ImageVectorizerTest {
         */
         b = new Block();
         b.up();
-        b.addPosition(1, 0.0);
-        b.down();
-        b.addPosition(50.0,1);
-        b.addPosition(50,50.0);
-        b.addPosition(0.0,50);
-        b.addPosition(1,0.0);
-        b.up();
         /*
         M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z
         
@@ -121,13 +114,6 @@ public class ImageVectorizerTest {
         b.up();
 
         bOffset= new Block();
-        bOffset.up();
-        bOffset.addPosition(5, 0.0);
-        bOffset.down();
-        bOffset.addPosition(500.0, 10);
-        bOffset.addPosition(495, 1000.0);
-        bOffset.addPosition(0.0, 990);
-        bOffset.addPosition(5, 0.0);
         bOffset.up();
         /*
 M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z
@@ -307,5 +293,15 @@ Z
         Block test = new Block();
         instance.parsePath(d, test, widthRatio, heightRatio);
         assertEquals(result.toHumanReadableString(), test.toHumanReadableString());
+    }
+    
+   // @Test
+    public void hanskenTest() throws Exception{
+        
+        System.out.println("fileToSvg");
+        File input = new File(this.getClass().getResource("hansken.jpg").getFile());
+        List<Block> result = instance.process(input, width, height, resolution);
+        assertEquals(1,result.size());
+        
     }
 }

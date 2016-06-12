@@ -23,8 +23,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,6 +35,8 @@ import nl.meine.ibb.stripes.Block;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -110,14 +110,17 @@ public class ImageVectorizer extends Vectorizer {
 
             String widthString = "/svg/@width";
             String heightString = "/svg/@height";
-            String pathString = "//path/@d";
+            String pathString = "//path";
+            
             //Now we can instantiate the XPath processor and compile the expression:
 
             XPathFactory xpf = XPathFactory.newInstance();
             XPath xpath = xpf.newXPath();
+            
             XPathExpression pathExpression = xpath.compile(pathString);
             XPathExpression widthExpression = xpath.compile(widthString);
             XPathExpression heightExpression = xpath.compile(heightString);
+            
             //Since the expected result is a node-set (two strings), we evaluate the expression on the SVG document using XPathConstants.NODESET as the second parameter:
 
             NodeList svgPaths = (NodeList) pathExpression.evaluate(doc, XPathConstants.NODESET);
@@ -132,8 +135,14 @@ public class ImageVectorizer extends Vectorizer {
             Block b = new Block();
             blocks.add(b);
             for (int i = 0; i < svgPaths.getLength(); i++) {
-                String d = svgPaths.item(i).getNodeValue();
-                parsePath(d, b, widthRatio, heightRatio);
+                Node path = svgPaths.item(i);
+                NamedNodeMap nnm = path.getAttributes();
+                String opacity = nnm.getNamedItem("opacity").getNodeValue();
+                if (!opacity.equalsIgnoreCase("0.0")) {
+                    String d = nnm.getNamedItem("d").getNodeValue();
+
+                    parsePath(d, b, widthRatio, heightRatio);
+                }
             }
         } catch (SAXException ex) {
             log.error("Cannot parse svg document:",ex);
