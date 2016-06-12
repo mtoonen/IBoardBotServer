@@ -27,9 +27,21 @@ import nl.meine.ibb.stripes.Block;
  */
 public class Processor {
     
+    private final Vectorizer imageVectorizer;
+    private final Vectorizer textVectorizer;
+    
+    private final int width, height;
+    
+    public Processor(int width, int height){
+        imageVectorizer = new ImageVectorizer();
+        textVectorizer = new TextVectorizer();     
+        this.width = width;
+        this.height = height;
+    }
     
     public List<Block> processImage(File img){
-        List<Block> blocks = new ArrayList<>();
+        List<Block> blocks = null;
+        blocks = imageVectorizer.process(img, width, height);
         return blocks;
     }
     
