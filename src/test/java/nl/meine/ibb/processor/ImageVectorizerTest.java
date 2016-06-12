@@ -42,11 +42,11 @@ public class ImageVectorizerTest {
     private ImageVectorizer instance = new ImageVectorizer();
     private final String twolinessvgstring = "<svg width=\"50\" height=\"50\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" ><path fill=\"rgb(0,0,0)\" stroke=\"rgb(0,0,0)\" stroke-width=\"1\" opacity=\"0.0\" d=\"M 0.5 0.0 L 50.0 0.5 L 49.5 50.0 L 0.0 49.5 L 0.5 0.0 Z\" /><path fill=\"rgb(0,0,0)\" stroke=\"rgb(0,0,0)\" stroke-width=\"1\" opacity=\"1.0\" d=\"M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z\" /><path fill=\"rgb(0,0,0)\" stroke=\"rgb(0,0,0)\" stroke-width=\"1\" opacity=\"1.0\" d=\"M 21.5 22.0 L 23.0 22.5 L 22.5 43.0 L 21.0 42.5 L 21.5 22.0 Z\" /></svg>";
     
-    private int xOffset = 1;
-    private int yOffset = 1;
+    private int width = 1;
+    private int height = 1;
     
-    private int xOffset2 = 10;
-    private int yOffset2 = 20;
+    private int width2 = 10;
+    private int height2 = 20;
     
     private static Block b;
     private static Block bOffset;
@@ -204,7 +204,7 @@ Z
         
         List<Block> expResult = new ArrayList<>();
         expResult.add(b);
-        List<Block> result = instance.process(input,xOffset,yOffset);
+        List<Block> result = instance.process(input,width,height);
         
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
@@ -219,7 +219,7 @@ Z
         
   
         List<Block> expResult = Collections.singletonList(b);
-        List<Block> result = instance.svgToBlockList(twolinessvgstring,xOffset,yOffset);
+        List<Block> result = instance.svgToBlockList(twolinessvgstring,width,height);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
     }
@@ -252,7 +252,7 @@ Z
         result.up();
         
         Block test = new Block();
-        instance.parsePath(d, test, xOffset, yOffset);
+        instance.parsePath(d, test, width, height);
         assertEquals(result, test);
         // TODO review the generated test code and remove the default call to fail.
     }
@@ -271,7 +271,7 @@ Z
         result.up();
         
         Block test = new Block();
-        instance.parsePath(d, test, xOffset2,yOffset2);
+        instance.parsePath(d, test, width2,height2);
         assertEquals(result, test);
         // TODO review the generated test code and remove the default call to fail.
     }

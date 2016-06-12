@@ -23,10 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
+import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
+import nl.meine.ibb.processor.ImageVectorizer;
 import nl.meine.ibb.processor.Processor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,20 +57,8 @@ public class ServerActionBean implements ActionBean {
     @Validate
     private int NUM;
 
-    /* int[][] commands = {
-        {4009, 4001},//   [FA9FA1]    # Nuevo dibujo
-        {4009, 0001},//   [FA9001]    # Block number (this number is calculated by the server)
-        {4001, 4001},//   [FA1FA1]    # Start drawing (new draw)
-        {4003, 0000},//   [FA3000]     # pen lift
-        {0000, 0000},//   [000000]      # Move to  X = 0, Y = 0
-        {1000, 1000},//   [3E83E8]     # Move to X = 100mm, Y = 100mm
-        {4004, 0000},//   [FA4000]     # pen down (draw)
-        {1500, 1000},//   [5DC3E8]    # Move to  X = 150mm, Y = 100mm
-        {4003, 0000},//   [FA3000]     # Pen lift
-        {0000, 0000},//   [000000]      # Move to 0,0
-        {4002, 0000}//   [FA2000]     # Stop drawing (Finish).
-    };*/
-  
+    private String svg;
+    
  
     // <editor-fold desc="Getters and Setters" defaultstate="collapsed">
     public void setNUM(int NUM) {
@@ -103,8 +93,26 @@ public class ServerActionBean implements ActionBean {
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
+
+    public String getSvg() {
+        return svg;
+    }
+
+    public void setSvg(String svg) {
+        this.svg = svg;
+    }
+    
     // </editor-fold>
 
+    public Resolution view() throws Exception{
+          p = new Processor(100, 100);
+         
+        File input = new File(this.getClass().getResource("2lines.png").getFile());
+        ImageVectorizer iv = new ImageVectorizer();
+        svg = iv.fileToSvg(input);
+        return new ForwardResolution("/WEB-INF/svgtest.jsp");
+    }
+    
     @DefaultHandler
     public Resolution poll() {
         log.debug("Polled. AppId " + ID_IWBB + " with status " + STATUS);
