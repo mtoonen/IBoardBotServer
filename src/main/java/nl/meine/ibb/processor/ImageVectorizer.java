@@ -66,11 +66,11 @@ public class ImageVectorizer extends Vectorizer {
     }
 
     @Override
-    public List<Block> process(File input, int xOffset, int yOffset) {
+    public List<Block> process(File input, int width, int height) {
         List<Block> pointlist = null;
         try {
             String svg = fileToSvg(input);
-            pointlist = svgToBlockList(svg, xOffset, yOffset);
+            pointlist = svgToBlockList(svg, width, height);
         } catch (Exception ex) {
             Logger.getLogger(ImageVectorizer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -114,7 +114,7 @@ public class ImageVectorizer extends Vectorizer {
     }
 
     @Override
-    public List<Block> svgToBlockList(String svg, int xOffset, int yOffset) {
+    public List<Block> svgToBlockList(String svg, int width, int height) {
         List<Block> blocks = new ArrayList<>();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -136,7 +136,7 @@ public class ImageVectorizer extends Vectorizer {
             blocks.add(b);
             for (int i = 0; i < svgPaths.getLength(); i++) {
                 String d = svgPaths.item(i).getNodeValue();
-                parsePath(d, b, xOffset, yOffset);
+                parsePath(d, b, width, height);
             }
         } catch (SAXException ex) {
             log.error("Cannot parse svg document:",ex);
@@ -150,7 +150,7 @@ public class ImageVectorizer extends Vectorizer {
         return blocks;
     }
     
-    void parsePath(String d, Block b, int xOffset, int yOffset){
+    void parsePath(String d, Block b, int width, int height){
         //d="M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z"
         d = d.substring(0, d.length() - 3);
         String[] tokens = d.split(" ");
@@ -175,8 +175,8 @@ public class ImageVectorizer extends Vectorizer {
             i++;
             String yString = tokens[i];
 
-            double x = Double.parseDouble(xString) * xOffset;
-            double y = Double.parseDouble(yString) * yOffset;
+            double x = Double.parseDouble(xString) * width;
+            double y = Double.parseDouble(yString) * height;
             b.addPosition(x, y);
         }
         b.up();
