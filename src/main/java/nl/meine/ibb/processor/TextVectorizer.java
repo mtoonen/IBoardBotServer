@@ -31,13 +31,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import nl.meine.ibb.stripes.Block;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
  * @author Meine Toonen
  */
 public class TextVectorizer extends Vectorizer {
-    private ImageVectorizer imageVectorizer;
+    private static final Log log = LogFactory.getLog(TextVectorizer.class);
     
     public TextVectorizer(){
         init();
@@ -45,7 +47,6 @@ public class TextVectorizer extends Vectorizer {
 
     @Override
     public void init() {
-        imageVectorizer = new ImageVectorizer();
     }
 
     public List<Block> process(String text, int ibbWidth, int ibbHeight, double resolution) {
@@ -75,11 +76,12 @@ public class TextVectorizer extends Vectorizer {
             ImageIO.write(img, "png", new File("Text.png"));
             HashMap<String, Float> options = getDefaultOptions();
             String svg = ImageTracer.imageToSVG(img, options, palette);
-            return imageVectorizer.svgToBlockList(svg, ibbWidth, ibbHeight, resolution);
+            return svgToBlockList(svg, ibbWidth, ibbHeight, resolution);
         } catch (IOException ex) {
+            log.error(ex);
             ex.printStackTrace();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error(ex);
         }
 
         return null;
