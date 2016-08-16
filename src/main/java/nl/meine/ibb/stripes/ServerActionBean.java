@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Meine Toonen
  */
-@UrlBinding("/action/server")
+@UrlBinding("/server/{event}")
 public class ServerActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(ServerActionBean.class);
@@ -56,7 +56,7 @@ public class ServerActionBean implements ActionBean {
 
     @Validate
     private int NUM;
-
+ 
     private String svg;
     
  
@@ -121,20 +121,6 @@ public class ServerActionBean implements ActionBean {
         File input = new File(this.getClass().getResource("2lines.png").getFile());
         List<Block> bs = p.processImage(input);
         final Block b = bs.get(0);
-       /* final Block b = new Block();
-        b.addPosition(2000, 400);
-        b.down();
-        b.addPosition(1500, 800);
-        b.addPosition(3000, 200);
-        b.addPosition(3500, 1000);
-        b.up();
-        b.finish();*/
-       /* final Block b = new Block(1);
-        b.addPosition(1000,100);
-        b.down();
-        b.addPosition(10500, 150);
-        b.up();
-        b.finish();*/
 
         StreamingResolution res = new StreamingResolution("application/octet-stream") {
             @Override
