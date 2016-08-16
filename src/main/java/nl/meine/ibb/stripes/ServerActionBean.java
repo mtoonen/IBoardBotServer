@@ -16,9 +16,11 @@
  */
 package nl.meine.ibb.stripes;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
@@ -109,6 +111,8 @@ public class ServerActionBean implements ActionBean {
          
         File input = new File(this.getClass().getResource("2lines.png").getFile());
         ImageVectorizer iv = new ImageVectorizer();
+        File f2 = new File("/home/meine/dev/IBoardBotServer/hansken.jpg");
+         BufferedImage image = ImageIO.read(f2);
         svg = iv.fileToSvg(input);
         return new ForwardResolution("/WEB-INF/svgtest.jsp");
     }
