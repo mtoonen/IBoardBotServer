@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.List;
 import nl.meine.ibb.stripes.Block;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,6 +38,13 @@ public class VectorizerTest {
     private int width2 = 10;
     private int height2 = 20;
     
+    int imgWidth = 50;
+    int imgHeight = 50;
+
+    int boardWidth = 36; // 36 /0.1 * 10 
+    int boardHeight = 12; // 12/0.1*10
+    double resolution = 0.1;
+
     private Vectorizer instance;
     
     @Before
@@ -101,16 +109,10 @@ public class VectorizerTest {
         System.out.println("parsePath");
         String d = "M 6.5 10.0 L 45.0 10.5 L 44.5 12.0 L 6.0 11.5 L 6.5 10.0 Z";
         
-        int imgWidth = 50;
-        int imgHeight = 50;
-
-        int boardWidth = 36; // 36 /0.1 * 10 
-        int boardHeight = 12; // 12/0.1*10
-        double resolution = 0.1;
+      
         double widthRatio = (boardWidth / resolution * 10) / imgWidth;
         double heightRatio = (boardHeight / resolution * 10) / imgHeight;
 
-        ImageVectorizer instance = new ImageVectorizer(boardWidth, boardHeight, resolution);
         Block result = new Block();
         result.addPosition(6.5 * widthRatio, 10.0 * heightRatio);
         result.down();
@@ -123,5 +125,41 @@ public class VectorizerTest {
         Block test = new Block();
         instance.parsePath(d, test, widthRatio, heightRatio);
         assertEquals(result.toHumanReadableString(), test.toHumanReadableString());
+    }
+    
+    @Test
+    public void testParseQuadraticBezierCurves(){
+        String d = "M10 80 Q 95 10 180 80";
+        
+        double widthRatio = (boardWidth / resolution * 10) / imgWidth;
+        double heightRatio = (boardHeight / resolution * 10) / imgHeight;
+        Block test = new Block();
+        instance.parsePath(d, test, widthRatio, heightRatio);
+        
+        assertNotEquals(0, test.getCommands().size());
+    }
+    
+    @Test
+    public void testParseCubicBezierCurves(){
+        String d = "M10 10 C 20 20, 40 20, 50 10";
+        
+        double widthRatio = (boardWidth / resolution * 10) / imgWidth;
+        double heightRatio = (boardHeight / resolution * 10) / imgHeight;
+        Block test = new Block();
+        instance.parsePath(d, test, widthRatio, heightRatio);
+        
+        assertNotEquals(0, test.getCommands().size());
+    }
+    
+    @Test
+    public void testArcCurves(){
+        String d = "M80 80 A 45 45, 0, 0, 0, 125 125 L 125 80 Z";
+        
+        double widthRatio = (boardWidth / resolution * 10) / imgWidth;
+        double heightRatio = (boardHeight / resolution * 10) / imgHeight;
+        Block test = new Block();
+        instance.parsePath(d, test, widthRatio, heightRatio);
+        
+        assertNotEquals(0, test.getCommands().size());
     }
 }
